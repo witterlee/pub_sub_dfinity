@@ -63,17 +63,16 @@ async fn generate_random_trade() {
     let subscriber_store = storage::get_mut::<SubscriberStore>();
     let subscriber_ids: Vec<Principal> = subscriber_store.keys().cloned().collect();
 
-    let trade = TradeHistory {
-        price: 1000u128,
-        decimals: 4u8,
-        side: "sell".to_string(),
-        maker: Principal::anonymous(),
-        taker: Principal::anonymous(),
-        timestamp: 1625488881u64,
-    };
-
     stream::iter(subscriber_ids)
-        .for_each_concurrent(/* limit */ 10, |k| async move {            
+        .for_each_concurrent(/* limit */ 10, |k| async move {
+            let trade = TradeHistory {
+                price: 1000u128,
+                decimals: 4u8,
+                side: "sell".to_string(),
+                maker: Principal::anonymous(),
+                taker: Principal::anonymous(),
+                timestamp: 1625488881u64,
+            };
             let _call_result: Result<(String,), _> =
                 ic_cdk::api::call::call(k, "notify", (trade,)).await;
         }).await;
