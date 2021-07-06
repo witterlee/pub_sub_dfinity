@@ -1,0 +1,6 @@
+[workspace]
+members = [
+    "src/common",
+    "src/publish",
+    "src/subscriber"
+]

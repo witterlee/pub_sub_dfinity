@@ -1,0 +1,20 @@
+type TradeHistory = variant {
+  price : nat;
+  decimals:nat8;
+  side : text;
+  maker : principal;
+  taker : principal;
+  timestamp : nat64;
+};
+type Subscriber = variant {
+  price : nat;
+  decimals:nat8;
+  operator:text;
+  side : text;
+  maker : principal;
+  taker : principal;
+};
+service : {
+   "subscribe": (subscriber:Subscriber) -> (text);
+   "generate_random_trade": () -> ();
+}

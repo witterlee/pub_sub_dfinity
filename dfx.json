@@ -1,21 +1,28 @@
 {
   "canisters": {
-    "pub_sub_example": {
-      "main": "src/pub_sub_example/main.mo",
-      "type": "motoko"
+    "publish": {
+      "build": "cargo build --target wasm32-unknown-unknown --package  publish --release",
+      "candid": "src/publish/src/publish.did",
+      "wasm": "target/wasm32-unknown-unknown/release/publish.wasm",
+      "type": "custom"
     },
-    "pub_sub_example_assets": {
+    "subscriberA": {
+      "build": "cargo build --target wasm32-unknown-unknown --package  subscriber --release",
+      "candid": "src/subscriber/src/subscriber.did",
+      "wasm": "target/wasm32-unknown-unknown/release/subscriber.wasm",
+      "type": "custom",
       "dependencies": [
-        "pub_sub_example"
-      ],
-      "frontend": {
-        "entrypoint": "src/pub_sub_example_assets/src/index.html"
-      },
-      "source": [
-        "src/pub_sub_example_assets/assets",
-        "dist/pub_sub_example_assets/"
-      ],
-      "type": "assets"
+        "publish"
+      ]
+    },
+    "subscriberB": {
+      "build": "cargo build --target wasm32-unknown-unknown --package  subscriber --release",
+      "candid": "src/subscriber/src/subscriber.did",
+      "wasm": "target/wasm32-unknown-unknown/release/subscriber.wasm",
+      "type": "custom",
+      "dependencies": [
+        "publish"
+      ]
     }
   },
   "defaults": {
