@@ -1,4 +1,3 @@
-use futures::channel::oneshot;
 use futures::stream::{self, StreamExt};
 
 use ic_cdk::export::{
@@ -61,21 +60,56 @@ fn subscribe(subscriber: Subscriber) -> String {
 async fn generate_random_trade() {
     let subscriber_store = storage::get_mut::<SubscriberStore>();
     let subscriber_ids: Vec<Principal> = subscriber_store.keys().cloned().collect();
-    
+    let trade = TradeHistory {
+        price: 1000u128,
+        decimals: 4u8,
+        side: "sell".to_string(),
+        maker: Principal::anonymous(),
+        taker: Principal::anonymous(),
+        timestamp: 1625488881u64,
+    };
     stream::iter(subscriber_ids)
-        .for_each_concurrent(/* limit */ 10, |k| async move{
-            let trade = TradeHistory {
-                price: 1000u128,
-                decimals: 4u8,
-                side: "sell".to_string(),
-                maker: Principal::anonymous(),
-                taker: Principal::anonymous(),
-                timestamp: 1625488881u64,
-            };
-            let _call_result: Result<(String,), _> =
-                ic_cdk::api::call::call(k, "notify", (trade,)).await;
+        .for_each_concurrent(10, |k| {
+            let _trade = trade.clone();
+            async move {
+                let _call_result: Result<(i32,), _> =
+                    ic_cdk::api::call::call(k, "notify", (_trade,)).await;
+            }
         })
         .await;
+}
+
+#[pre_upgrade]
+fn pre_upgrade() {
+    let subscriber_store = storage::get_mut::<SubscriberStore>();
+    ic_cdk::print(format!(
+        "before pre_upgrade counter in map {}!",
+        subscriber_store.len()
+    ));
+    let mut vec: Vec<(Principal, Subscriber)> = Vec::new();
+    for (k, v) in subscriber_store.iter() {
+        vec.push((*k, v.clone()));
+    }
+    storage::stable_save((vec,)).unwrap();
+}
+
+#[post_upgrade]
+fn post_upgrade() {
+
+    let (old_subscriber,): (Vec<(Principal, Subscriber)>,) = storage::stable_restore().unwrap();
+    let subscriber_store = storage::get_mut::<SubscriberStore>();
+    ic_cdk::print(format!(
+        "before post_upgrade counter in map {}!",
+        subscriber_store.len()
+    ));
+    for (k, v) in old_subscriber {
+        subscriber_store.insert(k, v);
+    }
+
+    ic_cdk::print(format!(
+        "after post_upgrade counter in map {}!",
+        subscriber_store.len()
+    ));
 }
 
 #[cfg(test)]

@@ -16,6 +16,6 @@ type Subscriber = variant {
   timestamp : nat64;
 };
 service : {
-   "notify": (trade: TradeHistory) -> ();   
+   "notify": (trade: TradeHistory) -> (nat);   
    "setup_subscribe": (publish_canister_id: principal) -> (text); 
 }

@@ -52,7 +52,7 @@ async fn setup_subscribe(publish_id: Principal) -> String {
 }
 
 #[update]
-fn notify(trade: TradeHistory) { 
+fn notify(trade: TradeHistory) ->i32{ 
     for x in 1..9 { 
             ic_cdk::print(format!(
                 "{3}: subscriber {2} trade price {0},timestamp {1} ",
@@ -62,6 +62,7 @@ fn notify(trade: TradeHistory) {
                 x
             ));
     }
+    1
 }
 
 #[cfg(test)]
