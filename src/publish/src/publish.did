@@ -1,4 +1,4 @@
-type TradeHistory = variant {
+type TradeHistory = record {
   price : nat;
   decimals:nat8;
   side : text;
@@ -6,7 +6,7 @@ type TradeHistory = variant {
   taker : principal;
   timestamp : nat64;
 };
-type Subscriber = variant {
+type Subscriber = record {
   price : nat;
   decimals:nat8;
   operator:text;
@@ -15,6 +15,9 @@ type Subscriber = variant {
   taker : principal;
 };
 service : {
-   "subscribe": (subscriber:Subscriber) -> (text);
-   "generate_random_trade": () -> ();
+   subscribe: (s:Subscriber) -> (text);
+   generate_random_trade: () -> ();
+   __get_did: () -> (text) query;
+   get_did: () -> (text) query;
+   export_candid: () -> (text) query;
 }

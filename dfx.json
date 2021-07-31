@@ -1,9 +1,12 @@
 {
   "canisters": {
     "publish": {
-      "build": "cargo build --target wasm32-unknown-unknown --package  publish --release",
+      "build": [
+        "cargo build --target wasm32-unknown-unknown --package  publish --release",
+        "ic-cdk-optimizer target/wasm32-unknown-unknown/release/publish.wasm -o target/wasm32-unknown-unknown/release/publish_opt.wasm"
+      ],
       "candid": "src/publish/src/publish.did",
-      "wasm": "target/wasm32-unknown-unknown/release/publish.wasm",
+      "wasm": "target/wasm32-unknown-unknown/release/publish_opt.wasm",
       "type": "custom"
     },
     "subscriberA": {
@@ -30,7 +33,6 @@
       "packtool": ""
     }
   },
-  "dfx": "0.7.2",
   "networks": {
     "local": {
       "bind": "127.0.0.1:8000",

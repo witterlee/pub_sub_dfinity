@@ -1,4 +1,4 @@
-type TradeHistory = variant {
+type TradeHistory = record {
   price : nat;
   decimals:nat8;
   side : text;
@@ -6,7 +6,7 @@ type TradeHistory = variant {
   taker : principal;
   timestamp : nat64;
 };
-type Subscriber = variant {
+type Subscriber = record {
   price : nat;
   decimals:nat8;
   operator:text;
